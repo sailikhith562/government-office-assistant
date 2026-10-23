@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#174bba">
+  <title>Government Office Assistant</title>
+  <style>
+    :root {
+      --ink: #17352f;
+      --muted: #6b7d78;
+      --green: #14795f;
+      --green-dark: #075c49;
+      --green-soft: #e9f3ef;
+      --blue: #204bb7;
+      --surface: #ffffff;
+      --surface-soft: #f4f7f5;
+      --line: #e1e8e5;
+      --warning: #fff5df;
+      --warning-ink: #725316;
+      --shadow: 0 14px 40px rgba(24, 57, 49, .08);
+      --radius: 24px;
+      --text-scale: 1;
+    }
+    * { box-sizing: border-box; }
+    html { font-size: calc(16px * var(--text-scale)); scroll-behavior: smooth; }
+    body { margin: 0; background: var(--surface-soft); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.5; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    .system-bar { height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: var(--blue); color: #fff; font-weight: 700; letter-spacing: .02em; }
+    .system-right { display: flex; gap: 13px; align-items: center; font-size: .9rem; }
+    .battery { border: 1px solid rgba(255,255,255,.85); border-radius: 4px; padding: 0 5px; font-size: .72rem; line-height: 1.5; }
+    .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+    .topbar-inner { max-width: 1200px; margin: auto; padding: 15px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; gap: 13px; align-items: center; text-decoration: none; min-width: 0; }
+    .brand-mark { display: grid; place-items: center; width: 50px; height: 50px; flex: 0 0 50px; border-radius: 15px; background: var(--green-dark); color: #fff; font-size: 1rem; font-weight: 900; letter-spacing: -.05em; box-shadow: inset 0 0 0 2px rgba(255,255,255,.16); }
+    .brand-name { font-size: 1.08rem; color: #183c87; font-weight: 800; line-height: 1.15; }
+    .brand-sub { color: var(--muted); font-size: .78rem; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-button, .quiet-button { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 13px; padding: 10px 13px; min-height: 42px; }
+    .icon-button:hover, .quiet-button:hover { background: var(--green-soft); }
+    .server-pill { color: #47615a; font-size: .84rem; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; padding: 8px 10px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #dd9b21; display: inline-block; }
+    .nav-row { border-top: 1px solid #f1f4f2; }
+    .nav-inner { max-width: 1200px; margin: auto; padding: 0 24px; display: flex; gap: 7px; align-items: center; min-height: 55px; }
+    .nav-link { border: 0; border-radius: 11px; background: transparent; color: #60736d; font-weight: 700; padding: 10px 13px; }
+    .nav-link.active, .nav-link:hover { background: var(--green-soft); color: var(--green-dark); }
+    .menu-toggle { display: none; }
+    .shell { max-width: 1200px; margin: 0 auto; padding: 36px 24px 80px; }
+    .eyebrow { font-size: .76rem; color: #58796e; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 9px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { color: #18392f; font-size: clamp(2rem, 4vw, 3.35rem); letter-spacing: -.055em; line-height: 1.04; margin-bottom: 14px; }
+    h2 { font-size: clamp(1.4rem, 2.8vw, 2rem); line-height: 1.15; letter-spacing: -.035em; margin-bottom: 12px; }
+    h3 { font-size: 1.04rem; margin-bottom: 6px; }
+    .lead { color: #74837e; font-size: clamp(1.05rem, 2vw, 1.32rem); line-height: 1.48; max-width: 690px; margin-bottom: 24px; }
+    .hero { display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 30px; background: var(--surface); border: 1px solid #edf1ef; border-radius: 32px; padding: clamp(28px, 5vw, 58px); box-shadow: var(--shadow); }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-art { min-height: 250px; display: grid; place-items: center; position: relative; overflow: hidden; border-radius: 25px; background: linear-gradient(145deg, #edf7f2, #f8fbf9); }
+    .art-building { width: 70%; height: 175px; position: relative; border: 5px solid #b4d1c6; border-bottom-width: 8px; border-radius: 10px 10px 3px 3px; background: #fff; box-shadow: 18px 16px 0 rgba(20,121,95,.08); }
+    .art-building:before { content: "GOVERNMENT SERVICES"; display: block; background: var(--green); color: #fff; text-align: center; font-size: .68rem; font-weight: 900; letter-spacing: .08em; padding: 8px 4px; }
+    .art-building:after { content: ""; position: absolute; left: 14%; right: 14%; bottom: 0; height: 78px; background: repeating-linear-gradient(90deg, #dbece5 0 32px, #fff 32px 48px); border-top: 3px solid #b4d1c6; }
+    .art-path { position: absolute; bottom: 13px; left: 14%; right: 14%; height: 28px; border-top: 4px dashed #5eaa8e; border-radius: 50%; }
+    .art-pin { position: absolute; right: 17%; top: 20%; background: #fff; border-radius: 50%; width: 55px; height: 55px; display: grid; place-items: center; color: var(--green); box-shadow: 0 6px 18px #17352f22; font-size: 1.45rem; }
+    .button { border: 0; border-radius: 15px; background: var(--green); color: #fff; padding: 13px 19px; font-weight: 800; box-shadow: 0 5px 14px rgba(20,121,95,.12); transition: transform .15s, background .15s; }
+    .button:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .button.secondary { background: var(--green-soft); color: var(--green-dark); box-shadow: none; }
+    .button.ghost { background: #fff; color: var(--green-dark); border: 1px solid var(--line); box-shadow: none; }
+    .button.small { padding: 9px 13px; border-radius: 12px; font-size: .9rem; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 36px 0 16px; }
+    .section-head p { color: var(--muted); margin: 0; }
+    .grid { display: grid; gap: 16px; }
+    .grid.metrics { grid-template-columns: repeat(3,1fr); margin-top: 24px; }
+    .grid.cards { grid-template-columns: repeat(3,1fr); }
+    .card { background: var(--surface); border: 1px solid #e9efec; border-radius: var(--radius); padding: 22px; box-shadow: 0 6px 22px rgba(24,57,49,.035); }
+    .metric-label { color: var(--muted); font-size: .9rem; font-weight: 650; }
+    .metric-value { color: var(--green-dark); font-weight: 850; font-size: 1.8rem; margin: 3px 0 0; }
+    .service-card { display: flex; flex-direction: column; min-height: 220px; }
+    .service-icon { width: 45px; height: 45px; border-radius: 14px; display: grid; place-items: center; background: var(--green-soft); color: var(--green-dark); font-size: 1.2rem; margin-bottom: 16px; }
+    .service-card p { color: var(--muted); margin-bottom: 18px; }
+    .service-card .card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+    .tag { display: inline-flex; align-items: center; border-radius: 99px; padding: 5px 10px; background: #eef5f2; color: #347660; font-size: .74rem; font-weight: 800; }
+    .notice { border: 1px solid #f1ddb0; border-radius: 15px; background: var(--warning); color: var(--warning-ink); padding: 13px 15px; font-size: .92rem; }
+    .searchbar { display: flex; gap: 10px; width: min(100%, 700px); margin: 20px 0 14px; }
+    .input, .search-input, .select { width: 100%; border: 1px solid #dce5e1; background: #fff; border-radius: 14px; min-height: 49px; padding: 12px 15px; color: var(--ink); outline: none; }
+    .input:focus, .search-input:focus, .select:focus { border-color: #65a78d; box-shadow: 0 0 0 4px rgba(45,122,120,.12); }
+    .input::placeholder, .search-input::placeholder { color: #899691; }
+    .results-meta { color: var(--muted); font-size: .9rem; margin: 12px 0; }
+    .detail-layout { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(260px,.8fr); gap: 18px; align-items: start; }
+    .detail-title { display: flex; justify-content: space-between; align-items: start; gap: 16px; }
+    .list { display: grid; gap: 11px; padding: 0; margin: 0; list-style: none; }
+    .list li { display: flex; gap: 11px; align-items: start; color: #405c53; }
+    .check { color: var(--green); font-weight: 900; flex: 0 0 20px; }
+    .step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .step:last-child { border-bottom: 0; }
+    .step-no { border-radius: 50%; width: 32px; height: 32px; display: grid; place-items: center; background: var(--green-soft); color: var(--green-dark); font-weight: 900; }
+    .backlink { border: 0; padding: 0; background: none; color: var(--green-dark); font-weight: 800; margin-bottom: 18px; }
+    .office-row { border-bottom: 1px solid var(--line); padding: 13px 0; }
+    .office-row:last-child { border: 0; }
+    .office-row span { display: block; font-size: .81rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .office-row strong { display: block; margin-top: 3px; }
+    .empty { text-align: center; padding: 45px 20px; color: var(--muted); }
+    .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+    .assistant-fab { position: fixed; right: 24px; bottom: 24px; z-index: 15; border: 0; border-radius: 999px; padding: 13px 18px 13px 13px; display: flex; gap: 11px; align-items: center; color: #fff; background: linear-gradient(135deg, #168463, #075c49); box-shadow: 0 14px 32px rgba(4,74,58,.25); font-weight: 800; }
+    .assistant-avatar { width: 38px; height: 38px; background: rgba(255,255,255,.16); border-radius: 50%; display: grid; place-items: center; }
+    .chat-panel { display: none; position: fixed; z-index: 16; right: 20px; bottom: 86px; width: min(420px, calc(100vw - 28px)); height: min(560px, calc(100dvh - 125px)); border-radius: 24px; overflow: hidden; background: #fff; box-shadow: 0 20px 60px rgba(17,44,37,.25); border: 1px solid #dfe9e4; }
+    .chat-panel.open { display: flex; flex-direction: column; }
+    .chat-head { padding: 17px 19px; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: space-between; }
+    .chat-head p { margin: 2px 0 0; opacity: .82; font-size: .83rem; }
+    .chat-close { border: 0; color: white; background: transparent; font-size: 1.4rem; }
+    .chat-body { padding: 17px; overflow: auto; flex: 1; background: #f7f9fb; }
+    .bubble { background: #fff; border: 1px solid #e5eaf0; border-radius: 17px 17px 17px 5px; padding: 12px 14px; color: #41534e; margin-bottom: 11px; max-width: 95%; }
+    .quick-asks { display: flex; gap: 7px; overflow: auto; padding: 9px 12px; border-top: 1px solid var(--line); }
+    .quick-asks button { white-space: nowrap; border: 1px solid #dce7e2; border-radius: 99px; background: #f5faf7; color: var(--green-dark); padding: 7px 10px; font-size: .78rem; font-weight: 750; }
+    .chat-compose { display: flex; gap: 8px; padding: 11px 12px 13px; border-top: 1px solid var(--line); }
+    .chat-compose input { min-width: 0; flex: 1; border: 1px solid var(--line); border-radius: 12px; padding: 11px; }
+    .bottom-nav { display: none; }
+    .footer { max-width: 1200px; margin: 0 auto; padding: 0 24px 32px; color: #7d8a86; font-size: .82rem; }
+    .footer-inner { border-top: 1px solid var(--line); padding-top: 17px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .high-contrast { --ink:#061915; --muted:#374a44; --green:#005a43; --green-dark:#004432; --green-soft:#d4eee3; --surface-soft:#edf2ef; --line:#9eb3aa; }
+    @media (max-width: 820px) {
+      .shell { padding: 24px 18px 95px; }
+      .hero { grid-template-columns: 1fr; padding: 28px; }
+      .hero-art { min-height: 205px; }
+      .grid.cards { grid-template-columns: repeat(2,1fr); }
+      .detail-layout { grid-template-columns: 1fr; }
+      .nav-inner { padding: 0 15px; }
+    }
+    @media (max-width: 600px) {
+      .system-bar { height: 40px; padding: 0 18px; }
+      .system-right { gap: 8px; font-size: .76rem; }
+      .topbar-inner { padding: 11px 16px; }
+      .brand-mark { width: 44px; height: 44px; flex-basis: 44px; border-radius: 13px; }
+      .brand-name { font-size: .94rem; }
+      .brand-sub { font-size: .72rem; max-width: 180px; }
+      .top-actions .quiet-button, .server-pill { display: none; }
+      .menu-toggle { display: inline-block; }
+      .nav-row { display: none; }
+      .nav-row.mobile-open { display: block; }
+      .nav-inner { flex-direction: column; align-items: stretch; padding: 10px 16px; }
+      .nav-link { text-align: left; }
+      .shell { padding: 22px 14px 100px; }
+      .hero { padding: 24px 21px; border-radius: 27px; gap: 20px; }
+      .hero-art { min-height: 170px; }
+      .art-building { height: 140px; }
+      .grid.metrics { grid-template-columns: repeat(2,1fr); gap: 10px; }
+      .grid.cards { grid-template-columns: 1fr; gap: 12px; }
+      .card { padding: 18px; }
+      .section-head { align-items: start; flex-direction: column; margin-top: 28px; }
+      .searchbar { flex-direction: column; }
+      .searchbar .button { width: 100%; }
+      .detail-title { flex-direction: column; }
+      .assistant-fab { right: 14px; bottom: 78px; padding: 9px 13px 9px 9px; }
+      .assistant-avatar { width: 34px; height: 34px; }
+      .chat-panel { right: 8px; bottom: 72px; height: min(590px, calc(100dvh - 115px)); }
+      .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; display: grid; grid-template-columns: repeat(4,1fr); background: rgba(255,255,255,.97); border-top: 1px solid var(--line); padding: 8px 5px max(8px, env(safe-area-inset-bottom)); }
+      .bottom-nav button { border: 0; background: transparent; color: #71817b; font-size: .7rem; font-weight: 750; padding: 5px 2px; display: grid; gap: 3px; justify-items: center; }
+      .bottom-nav button.active { color: var(--green-dark); }
+      .bottom-nav .nav-icon { font-size: 1.15rem; line-height: 1; }
+      .footer { padding: 0 16px 82px; }
+      .footer-inner { display: block; }
+    }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="system-bar" aria-hidden="true"><span>19:14</span><span class="system-right"><span>◖</span><span>⌁</span><span class="battery">92</span></span></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#" onclick="navigate('home');return false" aria-label="Government Office Assistant home">
+        <span class="brand-mark">GOA</span><span><span class="brand-name">Government Office Assistant</span><span class="brand-sub">Find services · prepare · navigate</span></span>
+      </a>
+      <div class="top-actions">
+        <span class="server-pill"><i class="dot"></i> Demo mode</span>
+        <button class="icon-button" id="contrastBtn" aria-label="Toggle high contrast" title="High contrast">◐</button>
+        <button class="icon-button" id="textSizeBtn" aria-label="Increase text size" title="Increase text size">A+</button>
+        <button class="icon-button menu-toggle" id="menuToggle" aria-label="Open navigation menu">☰</button>
+      </div>
+    </div>
+    <div class="nav-row" id="navRow"><nav class="nav-inner" aria-label="Main navigation">
+      <button class="nav-link active" data-route="home">⌂ &nbsp;Home</button><button class="nav-link" data-route="services">▦ &nbsp;Find a service</button><button class="nav-link" data-route="saved">☆ &nbsp;Saved services</button><button class="nav-link" data-route="office">⌖ &nbsp;Office information</button>
+    </nav></div>
+  </header>
+  <main id="view" class="shell" tabindex="-1"></main>
+  <footer class="footer"><div class="footer-inner"><span>Government Office Assistant · Project prototype</span><span>Sample content only. Verify requirements with the responsible department.</span></div></footer>
+  <nav class="bottom-nav" aria-label="Quick navigation">
+    <button class="active" data-route="home"><span class="nav-icon">⌂</span>Home</button><button data-route="services"><span class="nav-icon">▦</span>Services</button><button data-route="saved"><span class="nav-icon">☆</span>Saved</button><button data-route="office"><span class="nav-icon">⌖</span>Office</button>
+  </nav>
+
+  <button class="assistant-fab" id="assistantOpen" aria-label="Open service guide assistant"><span class="assistant-avatar">G</span><span>Ask the Guide</span><span>⌄</span></button>
+  <section class="chat-panel" id="chatPanel" aria-label="Service guide assistant" aria-live="polite">
+    <div class="chat-head"><div><strong>Ask the Guide</strong><p>Quick help for finding service information</p></div><button class="chat-close" id="assistantClose" aria-label="Close assistant">×</button></div>
+    <div class="chat-body" id="chatBody"><div class="bubble">Hello! I can help you find a service or explain how to use this demo. Service details shown here are examples and must be checked with the official department.</div></div>
+    <div class="quick-asks"><button data-question="documents">What documents do I need?</button><button data-question="office">Where should I go?</button><button data-question="status">Can I check my status?</button></div>
+    <form class="chat-compose" id="chatForm"><input id="chatInput" aria-label="Ask a question" placeholder="Ask about a service…"><button class="button small" type="submit">Send</button></form>
+  </section>
+
+  <script>
+    const services = [
+      { id:'income', title:'Income certificate', category:'Certificates', icon:'▤', summary:'A guide to checking the requirements and steps for an income certificate.', documents:['Check the current identity and address proof requirements with the issuing authority.','Use the latest application form published by the department.','Confirm which supporting income records apply to your situation.'], steps:['Open the official service page and confirm that this is the service you need.','Review eligibility rules and the current document checklist.','Prepare the application and required supporting records.','Use the official submission channel or visit the verified office/counter.','Keep the acknowledgement or reference number for follow-up.'], office:'Issuing office and counter details have not been verified for this demo.', timing:'Check the responsible department’s current service hours before visiting.' },
+      { id:'birth', title:'Birth certificate', category:'Certificates', icon:'▣', summary:'A guide to locating the correct registration office and application instructions.', documents:['Confirm the required identity and event records with the local registration authority.','Check whether the application is for a new registration, a correction or a certified copy.','Download only the current form from an official source.'], steps:['Identify the local authority responsible for the registration.','Select the correct request type and verify its requirements.','Prepare the official form and supporting documents listed by the authority.','Submit through the authorized channel and retain the receipt/reference number.','Use the department’s official channel for corrections or follow-up.'], office:'Local registration office and counter details have not been connected in this demo.', timing:'Service timings vary by office; verify before travel.' },
+      { id:'pension', title:'Pension service guidance', category:'Social support', icon:'♡', summary:'A starting point for finding pension scheme information and the responsible office.', documents:['Confirm the scheme name and eligibility rules with the official department.','Check the current identity, age and scheme-specific evidence requirements.','Use the official scheme page to confirm whether an appointment is needed.'], steps:['Choose the pension scheme or service you are asking about.','Read the official eligibility and document guidance.','Prepare the application using the current official form.','Submit only through the department’s authorized channel.','Use the official receipt or tracking facility for later status checks.'], office:'Scheme office, counter and contact details are not verified in this demo.', timing:'Confirm office hours and any appointment requirements with the department.' },
+      { id:'grievance', title:'Public grievance information', category:'Public services', icon:'☏', summary:'Find where a public-service grievance should be submitted and how to follow it.', documents:['Check the grievance portal or department responsible for the issue.','Keep relevant dates, reference numbers and supporting records ready.','Do not include sensitive personal information unless the official channel requires it.'], steps:['Identify the department or public service related to the grievance.','Review the official submission instructions and privacy notice.','Submit through the authorized grievance channel.','Save the acknowledgement/reference number.','Check progress only through the official status facility.'], office:'The correct grievance authority depends on the service and jurisdiction.', timing:'Online grievance channels and office hours depend on the responsible authority.' }
+    ];
+    const view = document.getElementById('view');
+    let route='home'; let currentService=null; let serviceQuery='';
+    const saved = new Set(JSON.parse(localStorage.getItem('goa-saved')||'[]'));
+    const esc = (s)=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function navActive(){document.querySelectorAll('[data-route]').forEach(b=>b.classList.toggle('active',b.dataset.route===route));}
+    function navigate(to){ route=to; currentService=null; document.getElementById('navRow').classList.remove('mobile-open'); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+    function serviceCard(s){return `<article class="card service-card"><div class="service-icon" aria-hidden="true">${s.icon}</div><div><span class="tag">${esc(s.category)} · demo record</span><h3 style="margin-top:11px">${esc(s.title)}</h3><p>${esc(s.summary)}</p></div><div class="card-bottom"><button class="button small" onclick="openService('${s.id}')">View guide</button><button class="quiet-button" aria-label="${saved.has(s.id)?'Remove':'Save'} ${esc(s.title)}" onclick="toggleSaved('${s.id}')">${saved.has(s.id)?'★ Saved':'☆ Save'}</button></div></article>`;}
+    function home(){
+      const picks=services.slice(0,3);
+      view.innerHTML=`<section class="hero"><div><p class="eyebrow">A clearer visit starts here</p><h1>Know what to do before you go.</h1><p class="lead">Find service guidance, check what to verify, and see where to look for office information. Built for citizens who want a simpler way to navigate public services.</p><div class="hero-actions"><button class="button" onclick="navigate('services')">⌕ &nbsp;Find a service</button><button class="button secondary" onclick="navigate('office')">Office information</button></div><p style="color:var(--muted);font-size:.85rem;margin:16px 0 0">No account needed for this demonstration.</p></div><div class="hero-art" aria-hidden="true"><div class="art-building"></div><div class="art-path"></div><div class="art-pin">⌖</div></div></section>
+        <section class="grid metrics" aria-label="Project guide features"><article class="card"><div class="metric-label">Service guides</div><div class="metric-value">${services.length}</div><div class="metric-label">Illustrative examples</div></article><article class="card"><div class="metric-label">Live office data</div><div class="metric-value">Not linked</div><div class="metric-label">Verify details with the department</div></article><article class="card"><div class="metric-label">Saved by you</div><div class="metric-value">${saved.size}</div><div class="metric-label">Stored in this browser</div></article></section>
+        <div class="section-head"><div><p class="eyebrow">Start with a service</p><h2>Popular guides</h2><p>Examples only; official requirements must be confirmed.</p></div><button class="button secondary" onclick="navigate('services')">Browse all services</button></div>
+        <div class="grid cards">${picks.map(serviceCard).join('')}</div>
+        <section class="card" style="margin-top:20px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div><p class="eyebrow">Status information</p><h2 style="margin-bottom:5px">Looking for an update?</h2><p style="color:var(--muted);margin:0">This prototype has no connection to government queue or application systems.</p></div><button class="button ghost" onclick="showDemoStatus()">Try a demo status lookup</button></section>`;
+    }
+    function serviceList(){
+      const filtered=services.filter(s=>(s.title+' '+s.category+' '+s.summary).toLowerCase().includes(serviceQuery.toLowerCase()));
+      view.innerHTML=`<p class="eyebrow">Service directory</p><h1>Find a service</h1><p class="lead">Search a guide and review the information you should confirm with the responsible department.</p><div class="notice"><strong>Prototype information:</strong> Service names and guidance below are illustrative examples, not verified requirements or official advice.</div><div class="searchbar"><input class="search-input" id="serviceSearch" type="search" value="${esc(serviceQuery)}" placeholder="Search by service or category" aria-label="Search services"><button class="button" onclick="document.getElementById('serviceSearch').focus()">Search</button></div><p class="results-meta">${filtered.length} example ${filtered.length===1?'guide':'guides'}</p><div class="grid cards">${filtered.length?filtered.map(serviceCard).join(''):`<div class="card empty"><div class="empty-icon">⌕</div><strong>No guides match that search.</strong><p>Try another service name or category.</p></div>`}</div>`;
+      document.getElementById('serviceSearch').addEventListener('input',e=>{serviceQuery=e.target.value;serviceList();const n=document.getElementById('serviceSearch');n.focus();n.setSelectionRange(serviceQuery.length,serviceQuery.length);});
+    }
+    function openService(id){ currentService=services.find(s=>s.id===id); route='detail'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+    function detail(){
+      const s=currentService; if(!s){route='services';serviceList();return;}
+      view.innerHTML=`<button class="backlink" onclick="navigate('services')">← &nbsp;Back to services</button><div class="detail-title"><div><p class="eyebrow">${esc(s.category)} · example guide</p><h1>${esc(s.title)}</h1><p class="lead">${esc(s.summary)}</p></div><button class="button secondary" onclick="toggleSaved('${s.id}')">${saved.has(s.id)?'★ Saved':'☆ Save guide'}</button></div><div class="notice"><strong>Important:</strong> This is sample project content. Confirm current eligibility, documents, fees, processing times and office details with an official department source.</div><div class="detail-layout" style="margin-top:18px"><div class="grid"><section class="card"><p class="eyebrow">Before you apply</p><h2>What to verify</h2><ul class="list">${s.documents.map(x=>`<li><span class="check">✓</span><span>${esc(x)}</span></li>`).join('')}</ul></section><section class="card"><p class="eyebrow">The usual preparation flow</p><h2>Steps to follow</h2>${s.steps.map((x,i)=>`<div class="step"><span class="step-no">${i+1}</span><span>${esc(x)}</span></div>`).join('')}</section></div><aside class="grid"><section class="card"><p class="eyebrow">Office and counter</p><h2>Plan your visit</h2><div class="office-row"><span>Office</span><strong>${esc(s.office)}</strong></div><div class="office-row"><span>Service hours</span><strong>${esc(s.timing)}</strong></div><div class="office-row"><span>Information status</span><strong><span class="tag">Not verified · demo</span></strong></div><button class="button ghost" style="width:100%;margin-top:12px" onclick="navigate('office')">About office information</button></section><section class="card"><p class="eyebrow">Queue / application status</p><h3>No live status connection</h3><p style="color:var(--muted)">The project concept can show status only after an authorized, reliable service connection is available.</p><button class="button small secondary" onclick="showDemoStatus()">Open demo lookup</button></section></aside></div>`;
+    }
+    function office(){
+      view.innerHTML=`<p class="eyebrow">Plan your visit</p><h1>Office information</h1><p class="lead">The project is designed to show locations, counters and service timings in one place.</p><div class="card" style="margin-bottom:16px"><div class="service-icon">⌖</div><h2>No verified office directory is connected</h2><p class="lead" style="font-size:1rem;margin-bottom:0">This demo deliberately does not invent office addresses, counter numbers or opening hours. A project version should publish them only after the relevant department confirms the details and their update schedule.</p></div><div class="grid cards"><article class="card"><p class="eyebrow">Directory field</p><h3>Office location</h3><p style="color:var(--muted);margin:0">Verified address, building, map link and accessibility notes.</p></article><article class="card"><p class="eyebrow">Directory field</p><h3>Counter and service</h3><p style="color:var(--muted);margin:0">Service-to-counter mapping, confirmed by an office owner.</p></article><article class="card"><p class="eyebrow">Directory field</p><h3>Timings and updates</h3><p style="color:var(--muted);margin:0">Hours, exceptions, contact channel and last-reviewed date.</p></article></div>`;
+    }
+    function savedPage(){
+      const items=services.filter(s=>saved.has(s.id));
+      view.innerHTML=`<p class="eyebrow">Your browser</p><h1>Saved services</h1><p class="lead">Your saved guides stay in this browser on this device. This demo does not create an account or send saved items anywhere.</p>${items.length?`<div class="grid cards">${items.map(serviceCard).join('')}</div>`:`<div class="card empty"><div class="empty-icon">☆</div><h2>No saved guides yet</h2><p>Save a service guide to keep it handy in this browser.</p><button class="button" onclick="navigate('services')">Explore services</button></div>`}`;
+    }
+    function render(){ navActive(); if(route==='home')home(); else if(route==='services')serviceList(); else if(route==='detail')detail(); else if(route==='office')office(); else if(route==='saved')savedPage(); }
+    function toggleSaved(id){ if(saved.has(id))saved.delete(id);else saved.add(id);localStorage.setItem('goa-saved',JSON.stringify([...saved]));render(); }
+    function showDemoStatus(){
+      const id=prompt('Enter the sample ID DEMO-1001 to see a demonstration status. No live government record will be checked.','DEMO-1001');
+      if(id===null)return;
+      const clean=id.trim().toUpperCase();
+      if(clean==='DEMO-1001') alert('DEMO ONLY — Sample request: documents received; next step: review by the service office. This is fictional example data, not a real application status.');
+      else alert('No live status system is connected. For an actual application, use the official department tracking channel and your official reference number.');
+    }
+    document.querySelectorAll('[data-route]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.route)));
+    document.getElementById('menuToggle').addEventListener('click',()=>document.getElementById('navRow').classList.toggle('mobile-open'));
+    document.getElementById('contrastBtn').addEventListener('click',()=>document.body.classList.toggle('high-contrast'));
+    document.getElementById('textSizeBtn').addEventListener('click',()=>{const root=document.documentElement;const v=parseFloat(getComputedStyle(root).getPropertyValue('--text-scale'))||1;root.style.setProperty('--text-scale',v>=1.2?'1':String(Math.min(1.2,v+.1)));});
+    const panel=document.getElementById('chatPanel');
+    document.getElementById('assistantOpen').addEventListener('click',()=>panel.classList.toggle('open'));
+    document.getElementById('assistantClose').addEventListener('click',()=>panel.classList.remove('open'));
+    function answer(text){
+      const t=text.toLowerCase();
+      if(t.includes('document')||t.includes('paper'))return 'Each guide has a “What to verify” checklist. The demo does not provide an official document list. Check the responsible department’s latest notice before applying.';
+      if(t.includes('where')||t.includes('office')||t.includes('counter'))return 'Open Office information or a service guide. This prototype has no verified office directory yet, so it leaves addresses, counters and timings clearly marked for department confirmation.';
+      if(t.includes('status')||t.includes('queue')||t.includes('track'))return 'There is no live queue or application-status connection in this demo. Use the responsible department’s official tracking channel for a real application.';
+      if(t.includes('service')||t.includes('find')||t.includes('search'))return 'Choose “Find a service” and search by service name or category. The examples are illustrative; their details need official review.';
+      return 'I can help with service search, document checklists, office guidance and status information. This assistant uses simple demo responses and does not access government records.';
+    }
+    function addBubble(text){const b=document.createElement('div');b.className='bubble';b.textContent=text;document.getElementById('chatBody').appendChild(b);document.getElementById('chatBody').scrollTop=999999;}
+    document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;addBubble(text);addBubble(answer(text));input.value='';});
+    document.querySelectorAll('[data-question]').forEach(b=>b.addEventListener('click',()=>addBubble(answer(b.dataset.question))));
+    render();
+  </script>
+</body>
+</html>
